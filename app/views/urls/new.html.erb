@@ -2,12 +2,24 @@
   Babylinks - Yet Another Url Shortener
 </h1>
 
+<% if flash[:error] %>
+  <div class="flash error">
+    <%= raw flash[:error] %>
+  </div>
+<% end %>
+
+<% if flash[:notice] %>
+  <div class="flash notice">
+    <%= raw flash[:notice] %>
+  </div>
+<% end %>
+
 <%= form_for @url, :url => shorten_path do |u| %>
   <div>
-    <%= u.label :long_url %>:
+    <%= u.label "Shorten This" %>:
     <%= u.text_field :long_url %>
   </div>
   <div>
-    <%= u.submit %>
+    <%= u.submit "Create"%>
   </div>
 <% end %>

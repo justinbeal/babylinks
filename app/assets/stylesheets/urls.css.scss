@@ -1,0 +1,36 @@
+
+
+[data-route='urls/new'],[data-route='urls/create'] {
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+
+  form#new_url {
+    input[type='submit'] {
+      margin-top: 15px;
+      width: 125px;
+    }
+  }
+
+  .flash {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    margin-left: auto;
+    margin-right: auto;
+
+    padding-left: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 75%;
+
+    &.notice {
+      background-color: lightgreen;
+      color: green;
+    }
+
+    &.error {
+      background-color: lightpink;;
+      color: red;
+    }
+  }
+}
