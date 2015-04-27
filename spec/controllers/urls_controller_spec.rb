@@ -13,4 +13,28 @@ RSpec.describe UrlsController, type: :controller do
       expect(response).to redirect_to root_path
     end
   end
+
+  describe '#create' do
+    context 'when valid info is provided' do
+      it 'should save a url to the database' do
+        count = Url.count
+        post :create, :url => {:long_url => "http://www.example.com"}
+        expect(Url.count).to eq(count + 1)
+      end
+
+      it 'should render the new page with a flash notice on success' do
+        post :create, :url => {:long_url => "http://www.example.com"}
+        expect(response).to render_template(:new)
+      end
+
+      it 'should return 200' do
+        post :create, :url => {:long_url => "http://www.example.com"}
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'when invalid info is provided' do
+
+    end
+  end
 end
