@@ -15,12 +15,22 @@ class UrlsController < ApplicationController
   end
 
   def create
-    params[:url][:short_url] = Url.generate_short_url unless params[:url][:short_url]
-    url = Url.create user_params
+    if params[:url][:long_url] && params[:url][:long_url].start_with?("http")
+      params[:url][:short_url] = Url.generate_short_url unless params[:url][:short_url]
+      url = Url.create user_params
 
-    long_url = "<a href='#{url.long_url.html_safe}'>#{url.long_url.html_safe}</a>"
-    short_url = "<a href='#{url.short_url.html_safe}'>#{request.protocol}#{request.domain}/#{url.short_url.html_safe}</a>"
-    flash[:notice] = "Shortened #{long_url} to #{short_url}. Enjoy!"
+      long_url = "<a href='#{url.long_url.html_safe}'>#{url.long_url.html_safe}</a>"
+      short_url = "<a href='#{url.short_url.html_safe}'>#{request.protocol}#{request.domain}/#{url.short_url.html_safe}</a>"
+      flash[:notice] = "Shortened #{long_url} to #{short_url}. Enjoy!"
+    else
+      if params[:url][:long_url]
+        flash[:error] = "Babylinks will only shorten http or https urls."
+      else
+        flash[:error] = "Babylinks needs a url to generate a short url to point to."
+      end
+      response.status = 400
+    end
+
     @url = Url.new
     render :new
   end
