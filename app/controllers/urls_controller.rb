@@ -10,14 +10,17 @@ class UrlsController < ApplicationController
   end
 
   def new
+    flash[:error] = "hi"
     @url = Url.new
   end
 
   def create
     params[:url][:short_url] = Url.generate_short_url unless params[:url][:short_url]
-
     url = Url.create user_params
-    flash[:notice] = "Shortened #{url.long_url} to #{url.short_url}. Enjoy!"
+
+    long_url = "<a href='#{url.long_url.html_safe}'>#{url.long_url.html_safe}</a>"
+    short_url = "<a href='#{url.short_url.html_safe}'>#{request.protocol}#{request.domain}/#{url.short_url.html_safe}</a>"
+    flash[:notice] = "Shortened #{long_url} to #{short_url}. Enjoy!"
     @url = Url.new
     render :new
   end

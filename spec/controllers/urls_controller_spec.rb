@@ -25,6 +25,8 @@ RSpec.describe UrlsController, type: :controller do
       it 'should render the new page with a flash notice on success' do
         post :create, :url => {:long_url => "http://www.example.com"}
         expect(response).to render_template(:new)
+        expect(flash[:notice]).to be_present
+        expect(flash[:notice]).to include("<a href='http://www.example.com'>http://www.example.com</a>")
       end
 
       it 'should return 200' do
@@ -34,7 +36,7 @@ RSpec.describe UrlsController, type: :controller do
     end
 
     context 'when invalid info is provided' do
-
+      
     end
   end
 end
