@@ -20,12 +20,20 @@ class Url < ActiveRecord::Base
     url
   end
 
+  def self.short_url_profane?(url)
+    url.include? "foo"
+  end
+
   def self.short_url_valid?(url)
+    !Url::short_url_has_neighbors?(url) && !Url::short_url_profane?(url)
+  end
+
+  def self.short_url_has_neighbors?(url)
     Url.all.each do |u|
-      return false if Levenshtein::distance(u.short_url, url) <= 1
+      return true if Levenshtein::distance(u.short_url, url) <= 1
     end
 
-    true
+    false
   end
 
   def self.find_close_to(url)
