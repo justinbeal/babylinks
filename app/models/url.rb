@@ -4,6 +4,7 @@ class Url < ActiveRecord::Base
   before_create :validate_short_url
 
   KEY_LENGTH=8
+  PROFANITIES = ["foo", "bar"]
 
   def validate_short_url
     Url::short_url_valid?(short_url)
@@ -21,7 +22,10 @@ class Url < ActiveRecord::Base
   end
 
   def self.short_url_profane?(url)
-    url.include? "foo"
+    PROFANITIES.each do |p|
+      return true if url.include?(p)
+    end
+    false
   end
 
   def self.short_url_valid?(url)
