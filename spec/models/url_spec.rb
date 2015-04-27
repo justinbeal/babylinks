@@ -9,4 +9,18 @@ RSpec.describe Url, type: :model do
       expect(u2).to eq(u)
     end
   end
+
+  describe "@short_url_valid?" do
+    it "should return false if the provided short url is within 1 Levenshtein edit of any other short urls" do
+      Url.create :short_url => "tomato", :long_url => "http://example.com"
+
+      expect(Url::short_url_valid?("tomaato")).to eq(false)
+    end
+
+    it "should return true if the provided short url is distinct from every other short url" do
+        Url.create :short_url => "tomato", :long_url => "http://example.com"
+
+        expect(Url::short_url_valid?("cucumber")).to eq(true)
+    end
+  end
 end
