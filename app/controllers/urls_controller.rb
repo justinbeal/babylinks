@@ -10,7 +10,6 @@ class UrlsController < ApplicationController
   end
 
   def new
-    flash[:error] = "hi"
     @url = Url.new
   end
 
@@ -23,7 +22,7 @@ class UrlsController < ApplicationController
       short_url = "<a href='#{url.short_url.html_safe}'>#{request.protocol}#{request.domain}/#{url.short_url.html_safe}</a>"
       flash[:notice] = "Shortened #{long_url} to #{short_url}. Enjoy!"
     else
-      if params[:url][:long_url]
+      if params[:url][:long_url].present?
         flash[:error] = "Babylinks will only shorten http or https urls."
       else
         flash[:error] = "Babylinks needs a url to generate a short url to point to."
