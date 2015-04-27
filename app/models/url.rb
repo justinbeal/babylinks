@@ -1,7 +1,7 @@
 class Url < ActiveRecord::Base
   self.primary_key = 'short_url'
 
-  before_save :validate_short_url
+  before_create :validate_short_url
 
   KEY_LENGTH=8
 
