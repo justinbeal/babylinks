@@ -1,3 +1,13 @@
-<div>
-  "This is new."
-</div>
+<h1 class="h1">
+  Babylinks - Yet Another Url Shortener
+</h1>
+
+<%= form_for @url, :url => shorten_path do |u| %>
+  <div>
+    <%= u.label :long_url %>:
+    <%= u.text_field :long_url %>
+  </div>
+  <div>
+    <%= u.submit %>
+  </div>
+<% end %>
