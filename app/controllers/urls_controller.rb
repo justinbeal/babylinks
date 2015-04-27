@@ -5,6 +5,7 @@ class UrlsController < ApplicationController
     if url
       redirect_to url.long_url
     else
+      flash[:notice] = "We don't recognize this link."
       redirect_to root_url
     end
   end
@@ -20,12 +21,12 @@ class UrlsController < ApplicationController
 
       long_url = "<a href='#{url.long_url.html_safe}'>#{url.long_url.html_safe}</a>"
       short_url = "<a href='#{url.short_url.html_safe}'>#{request.protocol}#{request.domain}/#{url.short_url.html_safe}</a>"
-      flash[:notice] = "Shortened #{long_url} to #{short_url}. Enjoy!"
+      flash.now[:notice] = "Shortened #{long_url} to #{short_url}. Enjoy!"
     else
       if params[:url][:long_url].present?
-        flash[:error] = "Babylinks will only shorten http or https urls."
+        flash.now[:error] = "Babylinks will only shorten http or https urls."
       else
-        flash[:error] = "Babylinks needs a url to generate a short url to point to."
+        flash.now[:error] = "Babylinks needs a url to generate a short url to point to."
       end
       response.status = 400
     end

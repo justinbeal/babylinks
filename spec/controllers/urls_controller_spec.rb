@@ -14,9 +14,11 @@ RSpec.describe UrlsController, type: :controller do
       expect(response).to redirect_to url.long_url
     end
 
-    it 'should redirect to the root URL if the provided short_url is unknown.' do
+    it 'should redirect to the root URL with a flash if the provided short_url is unknown.' do
       get :show, :short => 'donaldduck'
       expect(response).to redirect_to root_path
+      expect(flash[:notice]).to be_present
+      expect(flash[:notice]).to eq("We don't recognize this link.")
     end
   end
 
