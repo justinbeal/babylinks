@@ -7,5 +7,10 @@ RSpec.describe UrlsController, type: :controller do
       get :show, :short => url.short_url
       expect(response).to redirect_to url.long_url
     end
+
+    it 'should redirect to the root URL if the provided short_url is unknown.' do
+      get :show, :short => 'donaldduck'
+      expect(response).to redirect_to root_path
+    end
   end
 end
