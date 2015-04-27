@@ -27,4 +27,12 @@ class Url < ActiveRecord::Base
 
     true
   end
+
+  def self.find_close_to(url)
+    Url.all.each do |u|
+      return u if Levenshtein::distance(u.short_url, url) <= 1
+    end
+
+    nil
+  end
 end

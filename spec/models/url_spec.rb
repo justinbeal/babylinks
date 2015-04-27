@@ -23,4 +23,21 @@ RSpec.describe Url, type: :model do
         expect(Url::short_url_valid?("cucumber")).to eq(true)
     end
   end
+
+  describe "@find_close_to" do
+    it "should return exact matches on short_url" do
+      u = Url.create :short_url => "tomato", :long_url => "http://example.com"
+      expect(Url.find_close_to("tomato")).to eq(u)
+    end
+
+    it "should return a url record that is within 1 Levenshtein edit of any other url" do
+      u = Url.create :short_url => "tomoto", :long_url => "http://example.com"
+      expect(Url.find_close_to("tomato")).to eq(u)
+    end
+
+    it "should return nil if no exact or close match is found" do
+      u = Url.create :short_url => "tomato", :long_url => "http://example.com"
+      expect(Url.find_close_to("cucumber")).to be_nil
+    end
+  end
 end

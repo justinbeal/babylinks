@@ -8,6 +8,12 @@ RSpec.describe UrlsController, type: :controller do
       expect(response).to redirect_to url.long_url
     end
 
+    it 'should redirect if a close match exists as well' do
+      url = Url.create :short_url => "short", :long_url => "http://example.com/long"
+      get :show, :short => "shirt"
+      expect(response).to redirect_to url.long_url
+    end
+
     it 'should redirect to the root URL if the provided short_url is unknown.' do
       get :show, :short => 'donaldduck'
       expect(response).to redirect_to root_path

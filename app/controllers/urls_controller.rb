@@ -1,6 +1,6 @@
 class UrlsController < ApplicationController
   def show
-    url = Url.find_by :short_url => params[:short]
+    url = Url.find_close_to params[:short]
 
     if url
       redirect_to url.long_url
