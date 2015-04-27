@@ -14,7 +14,13 @@ class UrlsController < ApplicationController
   end
 
   def info
-
+    url = Url.find_close_to params[:short]
+    if url
+      render :json => url.to_json
+    else
+      response.status = 404
+      render :nothing => true
+    end
   end
 
   def new

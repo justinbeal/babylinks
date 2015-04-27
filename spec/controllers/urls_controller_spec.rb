@@ -1,6 +1,44 @@
 require 'rails_helper'
 
 RSpec.describe UrlsController, type: :controller do
+
+  describe '#info' do
+    context 'when a known short url is provided' do
+      it 'should render json information about the provided short_url' do
+        url = Url.create :short_url => "short", :long_url => "http://example.com/long"
+        get :info, :short => url.short_url
+        expect(response.body).to eq(url.to_json)
+      end
+
+      it 'should render json information if a close match exists as well' do
+        url = Url.create :short_url => "short", :long_url => "http://example.com/long"
+        get :info, :short => "shirt"
+        expect(response.body).to eq(url.to_json)
+      end
+
+      it 'should not update the last_seen timestamp for this url' do
+        url = Url.create :short_url => "short", :long_url => "http://example.com/long", :last_seen => Time.now
+        last_seen_before = url.last_seen
+        get :info, :short => url.short_url
+
+        expect(url.reload.last_seen.utc.to_s).to eq(last_seen_before.to_s)
+      end
+
+      it 'should not increment the view count for this url' do
+        url = Url.create :short_url => "short", :long_url => "http://example.com/long"
+        views_before = url.view_count
+
+        get :info, :short => url.short_url
+        expect(url.reload.view_count).to eq(views_before)
+      end
+    end
+
+    it 'should render nothing if the provided short_url is unknown.' do
+      get :info, :short => 'donaldduck'
+      expect(response.body).to be_empty
+    end
+  end
+
   describe '#show' do
     context 'when a known short url is provided' do
       it 'should redirect to the long_url for the provided short_url' do
@@ -37,8 +75,6 @@ RSpec.describe UrlsController, type: :controller do
       expect(flash[:notice]).to be_present
       expect(flash[:notice]).to eq("We don't recognize this link.")
     end
-
-
   end
 
   describe '#create' do
