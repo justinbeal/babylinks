@@ -2,16 +2,33 @@ require 'rails_helper'
 
 RSpec.describe UrlsController, type: :controller do
   describe '#show' do
-    it 'should redirect to the long_url for the provided short_url' do
-      url = Url.create :short_url => "short", :long_url => "http://example.com/long"
-      get :show, :short => url.short_url
-      expect(response).to redirect_to url.long_url
-    end
+    context 'when a known short url is provided' do
+      it 'should redirect to the long_url for the provided short_url' do
+        url = Url.create :short_url => "short", :long_url => "http://example.com/long"
+        get :show, :short => url.short_url
+        expect(response).to redirect_to url.long_url
+      end
 
-    it 'should redirect if a close match exists as well' do
-      url = Url.create :short_url => "short", :long_url => "http://example.com/long"
-      get :show, :short => "shirt"
-      expect(response).to redirect_to url.long_url
+      it 'should redirect if a close match exists as well' do
+        url = Url.create :short_url => "short", :long_url => "http://example.com/long"
+        get :show, :short => "shirt"
+        expect(response).to redirect_to url.long_url
+      end
+
+      it 'should update the last_seen timestamp for this url' do
+        url = Url.create :short_url => "short", :long_url => "http://example.com/long"
+        get :show, :short => url.short_url
+
+        expect(url.reload.last_seen.utc).to be_within(1.second).of Time.now
+      end
+
+      it 'should increment the view count for this url' do
+        url = Url.create :short_url => "short", :long_url => "http://example.com/long"
+        views_before = url.view_count
+
+        get :show, :short => url.short_url
+        expect(url.reload.view_count).to eq(views_before + 1)
+      end
     end
 
     it 'should redirect to the root URL with a flash if the provided short_url is unknown.' do
@@ -20,6 +37,8 @@ RSpec.describe UrlsController, type: :controller do
       expect(flash[:notice]).to be_present
       expect(flash[:notice]).to eq("We don't recognize this link.")
     end
+
+
   end
 
   describe '#create' do

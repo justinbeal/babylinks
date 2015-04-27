@@ -3,11 +3,18 @@ class UrlsController < ApplicationController
     url = Url.find_close_to params[:short]
 
     if url
+      url.last_seen = Time.now
+      url.view_count += 1
+      url.save!
       redirect_to url.long_url
     else
       flash[:notice] = "We don't recognize this link."
       redirect_to root_url
     end
+  end
+
+  def info
+
   end
 
   def new
